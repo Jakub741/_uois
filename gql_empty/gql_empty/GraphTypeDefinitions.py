@@ -42,7 +42,7 @@ from gql_empty.GraphResolvers import resolveThesesById,resolveUsersById,resolveW
 
 
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a Thesis""")
-class ThesesGQLModel:
+class ProjectGQLModel: #theses ne project
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -53,6 +53,13 @@ class ThesesGQLModel:
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
+    
+
+    @strawberryA.field(description="""Type of Theses""")
+    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeGQLModel": ##unfinished
+        async with withInfo(info) as session:
+            result = await resolveWorkTypeById(session,self.work_id)
+            return result
 
     @strawberryA.field(description="""Name""")
     def name(self) -> str:
@@ -91,12 +98,10 @@ class UserGQLModel:
 
 @strawberryA.type(description="""Type for query root""")
 class Query:
-###################### Tady budou funkční query
     @strawberryA.field(description="""Finds Theses by their id""")
     async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ProjectGQLModel, None]:
         result = await resolveThesesById(AsyncSessionFromInfo(info), id)
         return result
-########################xx
 
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def say_hello(
