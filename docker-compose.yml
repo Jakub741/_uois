@@ -262,6 +262,8 @@ services:
     # ports: #v deploymentu by nebylo zadne mapovani portu
     #   # vnejsi port : port, kde sluzbu poskytuje kontejner
     #   - 31128:8000
+    ports:
+      - 31128:8000
 
   gql_events:
     image: gql_events

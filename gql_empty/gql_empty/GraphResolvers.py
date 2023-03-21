@@ -16,7 +16,9 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_empty.DBDefinitions import BaseModel
 
-from gql_empty.DBDefinitions import UserModel,ThesesModel
+from gql_empty.DBDefinitions import UserModel,ThesesModel, WorkTypeModel #Import všech modelů z DBDefinitions
 
+#Pokud to tady nefunguje tak stačí refreshovat docker a PGadmin!
 resolveThesesById = createEntityByIdGetter(ThesesModel)
-
+resolveUsersById = createEntityByIdGetter(UserModel)
+resolveWorkTypeById = createEntityByIdGetter(WorkTypeModel)

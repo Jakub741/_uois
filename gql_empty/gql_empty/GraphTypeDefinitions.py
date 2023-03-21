@@ -42,7 +42,8 @@ class UserGQLModel:
 #
 ###########################################################################################################################
 
-
+#import resolverů
+from gql_empty.GraphResolvers import resolveThesesById,resolveUsersById,resolveWorkTypeById
 @strawberryA.type(description="""Type for query root""")
 class Query:
     @strawberryA.field(description="""Finds an workflow by their id""")

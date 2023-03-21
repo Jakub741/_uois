@@ -38,16 +38,25 @@ def UUIDColumn(name=None):
     
 
 class ThesesModel(BaseModel):
-    """Spravuje data spojena se závěrečnými prácemi"""
-    __tablename__ = 'thesis'
+    """Spravuje data spojena se závěrečnými prácemi
+        typ práce, stav práce...
+    """
+    __tablename__ = 'theses'
     
     id = UUIDColumn()
-    name = Column(String)
-    startDate = Column(Date)
-    endDate = Column(Date)
-    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now()) #how does this work?
+    name = Column(String) #Název práce
+    startDate = Column(Date) #Datum zahájení
+    endDate = Column(Date) #Datum ukončení
+    lastChange = Column(DateTime, server_default=sqlalchemy.sql.func.now()) #how does this work?
+    state = Column(String) #Stav práce
+
     user_id = Column(ForeignKey('users.id'), primary_key=True)
-    user = relationship('UserModel',back_populates='thesis')    
+    work_id = Column(ForeignKey('types.id'),primary_key=True)
+
+    
+    user = relationship('UserModel',back_populates='thesis')   
+    work = relationship('WorkTypeModel',back_populates='thesis')
+
 
     #projectType_id = Column(ForeignKey('projectProjectTypes.id'), primary_key=True)                      
     #projectType = relationship('ProjectTypeModel', back_populates='projects') 
@@ -59,10 +68,21 @@ class ThesesModel(BaseModel):
     #group = relationship('GroupModel')
 
 class UserModel(BaseModel):
-    """Spravuje data spojena s lidmi co pracují na projektu"""
+    """Spravuje data spojena s lidmi co pracují na projektu
+        téma, vedoucí, konzultanti,
+    """
     __tablename__ = 'users'
     
     id = UUIDColumn()
+
+class WorkTypeModel(BaseModel):
+    """
+    popis typu práce (diplomka, bakalářka...)
+    """
+    __tablename__ = 'types'
+    id = UUIDColumn()
+    name = Column(String) #diplomka...
+
 
 
 #pokussss
