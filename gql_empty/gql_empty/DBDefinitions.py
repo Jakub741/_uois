@@ -18,6 +18,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 import uuid
 
+from sqlalchemy import Column, String, BigInteger, Integer, DateTime, ForeignKey, Sequence, Table, Boolean, Float, Date
+
+
 BaseModel = declarative_base()
 
 
@@ -32,6 +35,34 @@ def UUIDColumn(name=None):
         return Column(
             name, String, primary_key=True, unique=True, default=newUuidAsString
         )
+    
+
+class ThesesModel(BaseModel):
+    """Spravuje data spojena se závěrečnými prácemi"""
+    __tablename__ = 'thesis'
+    
+    id = UUIDColumn()
+    name = Column(String)
+    startDate = Column(Date)
+    endDate = Column(Date)
+    lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.now()) #how does this work?
+    user_id = Column(ForeignKey('users.id'), primary_key=True)
+    user = relationship('UserModel',back_populates='thesis')    
+
+    #projectType_id = Column(ForeignKey('projectProjectTypes.id'), primary_key=True)                      
+    #projectType = relationship('ProjectTypeModel', back_populates='projects') 
+
+    #finance = relationship('FinanceModel', back_populates='project') #
+    #milestones = relationship('MilestoneModel', back_populates='project') #                     
+
+    #group_id = Column(ForeignKey('groups.id'), primary_key=True)
+    #group = relationship('GroupModel')
+
+class UserModel(BaseModel):
+    """Spravuje data spojena s lidmi co pracují na projektu"""
+    __tablename__ = 'users'
+    
+    id = UUIDColumn()
 
 
 #pokussss

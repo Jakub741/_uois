@@ -16,23 +16,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_empty.DBDefinitions import BaseModel
 
-###########################################################################################################################
-#
-# zde si naimportujte sve SQLAlchemy modely
-#
-###########################################################################################################################
+from gql_empty.DBDefinitions import UserModel,ThesesModel
 
+resolveThesesById = createEntityByIdGetter(ThesesModel)
 
-###########################################################################################################################
-#
-# zde definujte sve resolvery s pomoci funkci vyse
-# tyto pouzijete v GraphTypeDefinitions
-#
-###########################################################################################################################
-
-## Nasleduji funkce, ktere lze pouzit jako asynchronni resolvery
-
-# resolveItemById = createEntityByIdGetter(EntityModel)
-# resolveItemPage = createEntityGetter(EntityModel)
-
-# ...
