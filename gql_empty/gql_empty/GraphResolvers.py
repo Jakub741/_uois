@@ -19,6 +19,14 @@ from gql_empty.DBDefinitions import BaseModel
 from gql_empty.DBDefinitions import UserModel,ThesesModel, WorkTypeModel #Import všech modelů z DBDefinitions
 
 #Pokud to tady nefunguje tak stačí refreshovat docker a PGadmin!
+#Theses resolvers
 resolveThesesById = createEntityByIdGetter(ThesesModel)
+resolveThesesForUser = create1NGetter(UserModel, foreignKeyName='user_id')
+resolveThesesForWork = create1NGetter(WorkTypeModel, foreignKeyName='work_id')
+resolveUpdateTheses = createUpdateResolver(ThesesModel)
+resolveThesesAll = createEntityGetter(ThesesModel)
+
+#Users resolver
 resolveUsersById = createEntityByIdGetter(UserModel)
+#Type of work resolvers
 resolveWorkTypeById = createEntityByIdGetter(WorkTypeModel)

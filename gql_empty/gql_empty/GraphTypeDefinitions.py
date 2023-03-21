@@ -3,10 +3,30 @@ import typing
 from unittest import result
 import strawberry as strawberryA
 import uuid
-
+#náš import
+from contextlib import asynccontextmanager
+import datetime
 
 def AsyncSessionFromInfo(info):
     return info.context["session"]
+###############################################
+@asynccontextmanager
+async def withInfo(info):
+    asyncSessionMaker = info.context['asyncSessionMaker']
+    async with asyncSessionMaker() as session:
+        try:
+            yield session
+        finally:
+            pass
+
+def AsyncSessionFromInfo(info):
+    print('obsolete function used AsyncSessionFromInfo, use withInfo context manager instead')
+    return info.context['session']
+
+def AsyncSessionMakerFromInfo(info):
+    return info.context['asyncSessionMaker']
+
+###############################################
 
 
 ###########################################################################################################################
@@ -16,9 +36,38 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-#
-# priklad rozsireni UserGQLModel
-#
+
+#import resolverů
+from gql_empty.GraphResolvers import resolveThesesById,resolveUsersById,resolveWorkTypeById,resolveThesesAll,resolveThesesForUser,resolveThesesForWork,resolveUpdateTheses
+
+
+@strawberryA.federation.type(keys=["id"],description="""Entity representing a Thesis""")
+class ThesesGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveThesesById(session, id)
+            result._type_definition = cls._type_definition # little hack :)
+            return result
+    
+    @strawberryA.field(description="""Primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Name""")
+    def name(self) -> str:
+        return self.name
+
+    @strawberryA.field(description="""Start date""")
+    def startDate(self) -> datetime.date:
+        return self.startDate
+    
+    @strawberryA.field(description="""End date""")
+    def endDate(self) -> datetime.date:
+        return self.startDate
+
+
+##############################x
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
 
@@ -29,11 +78,6 @@ class UserGQLModel:
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
 
 
-#     zde je rozsireni o dalsi resolvery
-#     @strawberryA.field(description="""Inner id""")
-#     async def external_ids(self, info: strawberryA.types.Info) -> List['ExternalIdGQLModel']:
-#         result = await resolveExternalIds(session,  self.id)
-#         return result
 
 
 ###########################################################################################################################
@@ -42,16 +86,25 @@ class UserGQLModel:
 #
 ###########################################################################################################################
 
-#import resolverů
-from gql_empty.GraphResolvers import resolveThesesById,resolveUsersById,resolveWorkTypeById
+
+
+
 @strawberryA.type(description="""Type for query root""")
 class Query:
+###################### Tady budou funkční query
+    @strawberryA.field(description="""Finds Theses by their id""")
+    async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ProjectGQLModel, None]:
+        result = await resolveThesesById(AsyncSessionFromInfo(info), id)
+        return result
+########################xx
+
     @strawberryA.field(description="""Finds an workflow by their id""")
     async def say_hello(
         self, info: strawberryA.types.Info, id: strawberryA.ID
     ) -> Union[str, None]:
         result = f"Hello {id}"
         return result
+
 
 
 ###########################################################################################################################
@@ -64,3 +117,4 @@ class Query:
 ###########################################################################################################################
 
 schema = strawberryA.federation.Schema(Query, types=(UserGQLModel,))
+
