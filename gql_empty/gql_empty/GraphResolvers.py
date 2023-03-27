@@ -20,9 +20,10 @@ from gql_empty.DBDefinitions import UserModel,ThesesModel, WorkTypeModel #Import
 
 #Pokud to tady nefunguje tak stačí refreshovat docker a PGadmin!
 #Theses resolvers
-resolveThesesById = createEntityByIdGetter(ThesesModel)
-resolveThesesForUser = create1NGetter(UserModel, foreignKeyName='user_id')
-resolveThesesForWork = create1NGetter(WorkTypeModel, foreignKeyName='work_id')
+resolveThesesById = createEntityByIdGetter(ThesesModel) #vrací funkci
+resolveThesesForUser = create1NGetter(UserModel, foreignKeyName='user_id') #vrací uživatele, filtr je FKName, cele spravit
+resolveThesesForUser = create1NGetter(ThesesModel, foreignKeyName='user_id') 
+resolveThesesForWork = create1NGetter(WorkTypeModel, foreignKeyName='work_id') #vrátí list s id
 resolveUpdateTheses = createUpdateResolver(ThesesModel)
 resolveThesesAll = createEntityGetter(ThesesModel)
 
