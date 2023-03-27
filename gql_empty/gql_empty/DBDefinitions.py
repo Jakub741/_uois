@@ -53,7 +53,10 @@ class ThesesModel(BaseModel):
     
     #thesesType_id = Column(ForeignKey('ThesesType.id'),primary_key=True) #work type id/theses type id 
     #thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
-    
+
+    thesesRole_id = Column(ForeignKey('ThesesRoles.id'), primary_key=True)
+    thesesRole_id = relationship('ThesesRolesModel',back_populates='theses')
+
 
 class ThesesRolesModel(BaseModel):
     """Spravuje data spojena s lidmi co pracují na projektu např. jakou roli mají
