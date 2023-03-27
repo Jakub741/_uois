@@ -50,38 +50,38 @@ class ThesesModel(BaseModel):
     lastChange = Column(DateTime, server_default=sqlalchemy.sql.func.now()) #how does this work?
     state = Column(String) #Stav práce
 
-    user_id = Column(ForeignKey('users.id'), primary_key=True)
-    work_id = Column(ForeignKey('types.id'),primary_key=True)
-
     
-    user = relationship('UserModel',back_populates='thesis')   
-    work = relationship('WorkTypeModel',back_populates='thesis')
+    #thesesType_id = Column(ForeignKey('ThesesType.id'),primary_key=True) #work type id/theses type id 
+    #thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
+    
 
-
-    #projectType_id = Column(ForeignKey('projectProjectTypes.id'), primary_key=True)                      
-    #projectType = relationship('ProjectTypeModel', back_populates='projects') 
-
-    #finance = relationship('FinanceModel', back_populates='project') #
-    #milestones = relationship('MilestoneModel', back_populates='project') #                     
-
-    #group_id = Column(ForeignKey('groups.id'), primary_key=True)
-    #group = relationship('GroupModel')
-
-class UserModel(BaseModel):
-    """Spravuje data spojena s lidmi co pracují na projektu
-        téma, vedoucí, konzultanti,
+class ThesesRolesModel(BaseModel):
+    """Spravuje data spojena s lidmi co pracují na projektu např. jakou roli mají
+    Název ThesesRoles je asi napiču...
     """
-    __tablename__ = 'users'
+    __tablename__ = 'ThesesRoles'
     
     id = UUIDColumn()
+    name = Column(String) #Název role kterou má (autor, konzultant...)
 
-class WorkTypeModel(BaseModel):
+    thesesRole_id = Column(ForeignKey('ThesesRole.id'), primary_key=True)
+    thesesRole_id = relationship('ThesesRoleTypeModel',back_populates='ThesesRolesModel')
+
+
+class ThesisTypeModel(BaseModel): #theses types 82 řádek
     """
     popis typu práce (diplomka, bakalářka...)
     """
-    __tablename__ = 'types'
+    __tablename__ = 'ThesesType'
     id = UUIDColumn()
     name = Column(String) #diplomka...
+
+class ThesesRoleTypeModel(BaseModel): 
+    """druhy rolí které můžou které můžou být lidem přiřazeny"""
+    __tablename__ = 'ThesesRole'
+    id = UUIDColumn()
+    name = Column(String) #konzultant, vedoucí, autor...
+
 
 
 
