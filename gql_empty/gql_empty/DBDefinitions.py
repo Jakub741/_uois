@@ -37,6 +37,25 @@ def UUIDColumn(name=None):
         )
     
 
+## docasny replacement
+
+class TestUserModel(BaseModel):
+    __tablename__ = 'usertest'
+    id = UUIDColumn()
+    name = Column(String)
+
+class ThesesUserRoleModel(BaseModel):
+    __tablename__ = 'thesesuser'
+    id = UUIDColumn()
+    user_id = Column(ForeignKey('usertest.id')) ## ZATIM NEEXUSTUJE
+    user  = relationship('TestUserModel')
+    theses_id = Column(ForeignKey('theses.id'))
+    thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
+    role_id = Column(ForeignKey('thesesrole.id'))
+    thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
+    
+
+
 class ThesesModel(BaseModel):
     """Spravuje data spojena se závěrečnými prácemi
         typ práce, stav práce...
@@ -51,37 +70,24 @@ class ThesesModel(BaseModel):
     state = Column(String) #Stav práce
 
     
-    #thesesType_id = Column(ForeignKey('ThesesType.id'),primary_key=True) #work type id/theses type id 
-    #thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
+    thesesType_id = Column(ForeignKey('ThesesType.id'),primary_key=True) #work type id/theses type id 
+    thesesType_id  = relationship('ThesesTypeModel',back_populates='theses')
 
-    thesesRole_id = Column(ForeignKey('ThesesRoles.id'), primary_key=True)
-    thesesRole_id = relationship('ThesesRolesModel',back_populates='theses')
-
-
-class ThesesRolesModel(BaseModel):
-    """Spravuje data spojena s lidmi co pracují na projektu např. jakou roli mají
-    Název ThesesRoles je asi napiču...
-    """
-    __tablename__ = 'ThesesRoles'
-    
-    id = UUIDColumn()
-    name = Column(String) #Název role kterou má (autor, konzultant...)
-
-    thesesRole_id = Column(ForeignKey('ThesesRole.id'), primary_key=True)
-    thesesRole_id = relationship('ThesesRoleTypeModel',back_populates='ThesesRolesModel')
+    #thesesRole_id = Column(ForeignKey('ThesesRoles.id'), primary_key=True)
+    #thesesRole_id = relationship('ThesesRolesModel',back_populates='theses')
 
 
-class ThesisTypeModel(BaseModel): #theses types 82 řádek
+class ThesesTypeModel(BaseModel): #theses types 82 řádek
     """
     popis typu práce (diplomka, bakalářka...)
     """
-    __tablename__ = 'ThesesType'
+    __tablename__ = 'thesestype'
     id = UUIDColumn()
     name = Column(String) #diplomka...
 
-class ThesesRoleTypeModel(BaseModel): 
+class ThesesRoleModel(BaseModel): 
     """druhy rolí které můžou které můžou být lidem přiřazeny"""
-    __tablename__ = 'ThesesRole'
+    __tablename__ = 'thesesrole'
     id = UUIDColumn()
     name = Column(String) #konzultant, vedoucí, autor...
 

@@ -38,10 +38,10 @@ def AsyncSessionMakerFromInfo(info):
 ###########################################################################################################################
 
 #import resolverů
-from gql_empty.GraphResolvers import resolveThesesById,resolveUsersById,resolveWorkTypeById,resolveThesesAll,resolveThesesForUser,resolveThesesForWork,resolveUpdateTheses
+from gql_empty.GraphResolvers import resolveThesesById,resolveThesesForUser,resolveWorkTypeById,resolveThesesAll,resolveThesesForUser,resolveThesesForWork,resolveUpdateTheses
 
 
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a Thesis""")
+@strawberryA.federation.type(keys=["id"],description="""Entity representing a Theses""")
 class ProjectGQLModel: #theses ne project
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -56,7 +56,7 @@ class ProjectGQLModel: #theses ne project
     
 
     @strawberryA.field(description="""Type of Theses""")
-    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeGQLModel": ##unfinished
+    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeModel": ##unfinished
         async with withInfo(info) as session:
             result = await resolveWorkTypeById(session,self.work_id)
             return result
@@ -71,8 +71,15 @@ class ProjectGQLModel: #theses ne project
     
     @strawberryA.field(description="""End date""")
     def endDate(self) -> datetime.date:
-        return self.startDate
+        return self.endDate
+    
+    @strawberryA.field(description="""Last change""")
+    def lastChange(self) -> datetime.datetime:
+        return self.lastChange
 
+    @strawberryA.field(description="""State of work""")
+    def state(self) -> str:
+        return self.state
 
 ##############################x
 @strawberryA.federation.type(extend=True, keys=["id"])

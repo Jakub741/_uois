@@ -16,18 +16,18 @@ from uoishelpers.resolvers import putSingleEntityToDb
 
 from gql_empty.DBDefinitions import BaseModel
 
-from gql_empty.DBDefinitions import UserModel,ThesesModel, WorkTypeModel #Import všech modelů z DBDefinitions
+from gql_empty.DBDefinitions import ThesesModel, ThesesRolesModel, ThesesTypeModel, ThesesRoleTypeModel #Import všech modelů z DBDefinitions
 
 #Pokud to tady nefunguje tak stačí refreshovat docker a PGadmin!
 #Theses resolvers
 resolveThesesById = createEntityByIdGetter(ThesesModel) #vrací funkci
-resolveThesesForUser = create1NGetter(UserModel, foreignKeyName='user_id') #vrací uživatele, filtr je FKName, cele spravit
+#resolveThesesForUser = create1NGetter(UserModel, foreignKeyName='user_id') #vrací uživatele, filtr je FKName, cele spravit
 resolveThesesForUser = create1NGetter(ThesesModel, foreignKeyName='user_id') 
 resolveThesesForWork = create1NGetter(WorkTypeModel, foreignKeyName='work_id') #vrátí list s id
 resolveUpdateTheses = createUpdateResolver(ThesesModel)
 resolveThesesAll = createEntityGetter(ThesesModel)
 
 #Users resolver
-resolveUsersById = createEntityByIdGetter(UserModel)
+#resolveUsersById = createEntityByIdGetter(UserModel)
 #Type of work resolvers
-resolveWorkTypeById = createEntityByIdGetter(WorkTypeModel)
+resolveThesesTypeById = createEntityByIdGetter(ThesesTypeModel)
