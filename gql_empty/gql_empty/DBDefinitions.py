@@ -73,7 +73,7 @@ class ThesesModel(BaseModel):
     thesesroles = relationship('ThesesUserRoleModel', back_populates = 'thesisr')
     
 
-class ThesesTypeModel(BaseModel): #theses types 82 řádek
+class ThesesTypeModel(BaseModel):
     """popis typu práce (diplomka, bakalářka...)"""
     __tablename__ = 'thesestype'
     id = UUIDColumn()
