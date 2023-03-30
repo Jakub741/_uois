@@ -42,7 +42,7 @@ from gql_empty.GraphResolvers import resolveThesesById,resolveThesesForUser,reso
 
 
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a Theses""")
-class ProjectGQLModel: #theses ne project
+class ThesesGQLModel: #theses ne project
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
@@ -81,6 +81,11 @@ class ProjectGQLModel: #theses ne project
     def state(self) -> str:
         return self.state
 
+    @strawberryA.field(description="""Participants""")
+    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeModel": ##unfinished, kurva jak na to
+        async with withInfo(info) as session:
+            result = await resolveWorkTypeById(session,self.work_id)
+            return result
 ##############################x
 @strawberryA.federation.type(extend=True, keys=["id"])
 class UserGQLModel:
