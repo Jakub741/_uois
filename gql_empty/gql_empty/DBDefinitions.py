@@ -48,10 +48,10 @@ class ThesesUserRoleModel(BaseModel):
     theses_id = Column(ForeignKey('theses.id'))
     role_id = Column(ForeignKey('thesesrole.id'))
  
-    user  = relationship('UserModel', back_populates = 'theses')
-    thesis = relationship('ThesesModel', back_populates = 'users')
+    user  = relationship('UserModel', back_populates = 'thesesroles')
+    thesis = relationship('ThesesModel', back_populates = 'thesesroles')
     thesesrole = relationship('ThesesRoleModel', back_populates = 'theses')# s čím má být propojený? - 1. varianta - propojení th.role s prací
-    thesisr = relationship('ThesesModel', back_populates = 'thesesroles')                       
+    # thesisr = relationship('ThesesModel', back_populates = 'thesesroles')                       
     # thesesroles = relationship('ThesesRoleModel', back_populates = 'users') # 2. varianta - propojeni th.role s uživatelem 
 
 class ThesesModel(BaseModel):
@@ -69,8 +69,8 @@ class ThesesModel(BaseModel):
     thesestype_id = Column(ForeignKey('thesestype.id')) #work type id/theses type id 
     
     thesestype  = relationship('ThesesTypeModel', back_populates='theses')
-    users = relationship('ThesesUserRoleModel', back_populates = 'thesis')
-    thesesroles = relationship('ThesesUserRoleModel', back_populates = 'thesisr')
+    #users = relationship('ThesesUserRoleModel', back_populates = 'thesis')
+    thesesroles = relationship('ThesesUserRoleModel', back_populates = 'thesis')
     
 
 class ThesesTypeModel(BaseModel):
@@ -81,7 +81,7 @@ class ThesesTypeModel(BaseModel):
     
     theses = relationship('ThesesModel', back_populates='thesestype')
 
-class ThesesRoleModel(BaseModel): 
+class ThesesRoleModel(BaseModel):  #prejmenovat na ThesesRoleTypeModel
     """druhy rolí které můžou které můžou být lidem přiřazeny"""
     __tablename__ = 'thesesrole'
     id = UUIDColumn()
@@ -93,7 +93,7 @@ class UserModel(BaseModel):
     __tablename__ = 'user'
     id = UUIDColumn()
     
-    theses = relationship('ThesesUserRoleModel', back_populates = 'user')
+    thesesroles = relationship('ThesesUserRoleModel', back_populates = 'user')
 
 
 

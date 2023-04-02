@@ -38,7 +38,13 @@ def AsyncSessionMakerFromInfo(info):
 ###########################################################################################################################
 
 #import resolverů
-from gql_empty.GraphResolvers import resolveThesesById,resolveThesesForUser,resolveWorkTypeById,resolveThesesAll,resolveThesesForUser,resolveThesesForWork,resolveUpdateTheses
+from gql_empty.GraphResolvers import (resolveThesesById,
+                                      resolveThesesRole,
+                                      resolveThesesUserRole,
+                                      resolveUserRole,
+                                      resolveRolesForThesis,
+                                      resolveRolesForUser,
+                                      resolveThesisTypeById)
 
 
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a Theses""")
@@ -47,18 +53,18 @@ class ThesesGQLModel:
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
             result = await resolveThesesById(session, id)
-            result._type_definition = cls._type_definition # little hack :)
+            result._type_definition = cls._type_definition 
             return result
     
     @strawberryA.field(description="""Primary key""")
     def id(self) -> strawberryA.ID:
         return self.id
-    
+     
 
     @strawberryA.field(description="""Type of Theses""")
-    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeModel":
+    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeGQLModel":
         async with withInfo(info) as session:
-            result = await resolveWorkTypeById(session,self.work_id)
+            result = await resolveThesisTypeById(session,self.work_id)
             return result
 
     @strawberryA.field(description="""Name""")
@@ -81,10 +87,10 @@ class ThesesGQLModel:
     def state(self) -> str:
         return self.state
 
-    @strawberryA.field(description="""Participants""")
-    async def type(self,info: strawberryA.types.Info) -> "ThesesTypeModel": ##unfinished, kurva jak na to
+    @strawberryA.field(description="""Users and their roles""")
+    async def roles(self,info: strawberryA.types.Info) -> List["ThesesUserRoleGQLModel"]: 
         async with withInfo(info) as session:
-            result = await resolveParticipantsByThesesID(session,self.work_id) ## unfinished
+            result = await resolveRolesForThesis(session,self.id)
             return result
 ##############################
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -95,31 +101,67 @@ class UserGQLModel:
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
+    
+    @strawberryA.field()(description="""Possible roles within Theses""")
+    async def thesesRoles(self, info: strawberryA.types.Info)->List['ThesesUserRoleGQLModel']:
+        async with withInfo(info) as session:
+            result = await resolveRolesForUser(session, self.id)
+            return result
 ##############################
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a UserRole""")
-class ThesesRoleModel:
+class ThesesRoleTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveThesesRole(session, id) ## dodelat
-            result._type_definition = cls._type_definition # little hack :)
+            result = await resolveThesesRole(session, id)
+            result._type_definition = cls._type_definition
             return result
         
     @strawberryA.field(description="""Name of role""")
     def name(self) -> str:
         return self.name
 ################################
-#?Ma tohle vubec existovat? Tohle by jsme vubec nemuseli queryovat
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesUserRole""")
-class ThesesUserRoleModel:
+class ThesesUserRoleGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
-            result = await resolveThesesUserRole(session, id) ## dodelat
-            result._type_definition = cls._type_definition # little hack :)
+            result = await resolveThesesUserRole(session, id) 
+            result._type_definition = cls._type_definition 
             return result
-        
+   
+    @strawberryA.field(description="""User assigned to Thesis""")
+    async def user(cls, info: strawberryA.types.Info, id: strawberryA.ID)->UserGQLModel:
+        async with withInfo(info) as session:
+            result = await resolveRolesForUser(session, id) 
+            result._type_definition = cls._type_definition 
+            return result
+   
+    @strawberryA.field(description="""Thesis which we are pointing to""") ##vylepsit nazev - je to xopowo?
+    async def thesis(cls, info: strawberryA.types.Info, id: strawberryA.ID)->ThesesGQLModel:
+        async with withInfo(info) as session:
+            result = await resolveRolesForThesis(session, id) 
+            result._type_definition = cls._type_definition
+            return result
+    
+    @strawberryA.field(description="""Role of User in Thesis""")
+    async def roleType(cls, info: strawberryA.types.Info, id: strawberryA.ID)->ThesesRoleTypeGQLModel:
+        async with withInfo(info) as session:
+            result = await resolveUserRole(session, id) 
+            result._type_definition = cls._type_definition
+            return result
 
+@strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesType""") #Je to spravne?
+class ThesesTypeGQLModel:
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        async with withInfo(info) as session:
+            result = await resolveThesesUserRole(session, id)
+            result._type_definition = cls._type_definition
+            return result
+    @strawberryA.field(description="""Type of Thesis""")
+    def name(self) -> str:
+        return self.name
 
 
 ###########################################################################################################################
@@ -131,7 +173,7 @@ class ThesesUserRoleModel:
 
 
 
-@strawberryA.type(description="""Type for query root""")
+@strawberryA.type(description="""Type for query root""")  #whaaaaat
 class Query:
     @strawberryA.field(description="""Finds Theses by their id""")
     async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ProjectGQLModel, None]:

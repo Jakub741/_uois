@@ -52,6 +52,11 @@ def types2():
     ]
     return data
 
+#   def types3():
+#   data1 = [ nejaky list]
+
+#zde definovat nase hard-coded data pro slovniky
+
 
 ###########################################################################################################################
 #
@@ -65,7 +70,7 @@ import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
     #
     # asyncio.gather(
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types1), # prvni
+    #   putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesRoleModel, types3), # prvni
     #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
     # )
     #
