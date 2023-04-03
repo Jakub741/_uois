@@ -102,7 +102,7 @@ class UserGQLModel:
     def resolve_reference(cls, id: strawberryA.ID):
         return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
     
-    @strawberryA.field()(description="""Possible roles within Theses""")
+    @strawberryA.field(description="""Possible roles within Theses""")
     async def thesesRoles(self, info: strawberryA.types.Info)->List['ThesesUserRoleGQLModel']:
         async with withInfo(info) as session:
             result = await resolveRolesForUser(session, self.id)
@@ -148,7 +148,7 @@ class ThesesUserRoleGQLModel:
     async def roleType(cls, info: strawberryA.types.Info, id: strawberryA.ID)->ThesesRoleTypeGQLModel:
         async with withInfo(info) as session:
             result = await resolveUserRole(session, id) 
-            result._type_definition = cls._type_definition
+            result._type_definition = cls._type_definition 
             return result
 
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesType""") #Je to spravne?
@@ -157,7 +157,7 @@ class ThesesTypeGQLModel:
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
         async with withInfo(info) as session:
             result = await resolveThesesUserRole(session, id)
-            result._type_definition = cls._type_definition
+            result._type_definition = cls._type_definition 
             return result
     @strawberryA.field(description="""Type of Thesis""")
     def name(self) -> str:
@@ -176,7 +176,7 @@ class ThesesTypeGQLModel:
 @strawberryA.type(description="""Type for query root""")  #whaaaaat
 class Query:
     @strawberryA.field(description="""Finds Theses by their id""")
-    async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ProjectGQLModel, None]:
+    async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThesesGQLModel, None]:
         result = await resolveThesesById(AsyncSessionFromInfo(info), id)
         return result
 

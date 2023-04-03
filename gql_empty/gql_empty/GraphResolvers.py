@@ -28,5 +28,5 @@ resolveThesesUserRole = createEntityByIdGetter(ThesesUserRoleModel) ## tpc tady 
 resolveThesesAll = createEntityGetter(ThesesModel)
 resolveRolesForThesis = create1NGetter(ThesesUserRoleModel, foreignKeyName='theses_id')
 resolveRolesForUser = create1NGetter(ThesesUserRoleModel, foreignKeyName='user_id')
-resolveUserRole = create1NGetter(ThesesUserRoleModel, foreignKenName='role_id')
+resolveUserRole = create1NGetter(ThesesUserRoleModel, foreignKeyName='role_id')
 resolveThesisTypeById = createEntityByIdGetter(ThesesTypeModel)
