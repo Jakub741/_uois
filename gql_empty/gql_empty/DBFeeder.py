@@ -1,6 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_empty.DBDefinitions import BaseModel
+from gql_empty.DBDefinitions import BaseModel, ThesesUserRoleModel, ThesesModel, ThesesTypeModel, ThesesRoleModel, UserModel
 
 import random
 import itertools
@@ -51,9 +51,31 @@ def types2():
         {"id": "4b883a38-6d9e-11ed-a1eb-0242ac120002", "name": "typeZ"},
     ]
     return data
-
-#   def types3():
-#   data1 = [ nejaky list]
+@cache
+def types3(): #pro ThesesTypeModel
+    data = [
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120003", "name": "Bakalářská práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120004", "name": "Diplomová práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120005", "name": "Zápočtová práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120006", "name": "Zkoušková práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120007", "name": "Seminární práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120008", "name": "Disertační práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120009", "name": "Vědecká práce"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120010", "name": "Studentská tvůrčí činnost"},
+       {"id": "4b883614-6d9e-11ed-a1eb-0242ac120011", "name": "Ostatní"},
+    ]
+    return data
+@cache
+def types4(): #pro ThesesRoleModel
+    data = [
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120003", "name": "Autor"},
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120004", "name": "Vedoucí"},
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120005", "name": "Oponent"},
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120006", "name": "Pomocník"},
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120007", "name": "Referent"},
+       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120008", "name": "Ostatní"},
+    ]
+    return data
 
 #zde definovat nase hard-coded data pro slovniky
 
@@ -68,13 +90,13 @@ import asyncio
 
 
 async def predefineAllDataStructures(asyncSessionMaker):
-    #
-    # asyncio.gather(
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesRoleModel, types3), # prvni
-    #   putPredefinedStructuresIntoTable(asyncSessionMaker, Types1Model, types2)  # druha ...
-    # )
-    #
-    #
+    
+    asyncio.gather(
+        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesTypeModel, types3),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesRoleModel, types4)
+    )
+    
+    
     return
 
 
