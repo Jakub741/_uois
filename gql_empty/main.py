@@ -15,7 +15,7 @@ from strawberry.fastapi import GraphQLRouter
 from gql_empty.DBDefinitions import startEngine, ComposeConnectionString
 
 ## Zabezpecuje prvotni inicializaci DB a definovani Nahodne struktury pro "Univerzity"
-# from gql_workflow.DBFeeder import createSystemDataStructureRoleTypes, createSystemDataStructureGroupTypes
+from gql_empty.DBFeeder import predefineAllDataStructures
 
 connectionString = ComposeConnectionString()
 
@@ -52,7 +52,7 @@ async def RunOnceAndReturnSessionMaker():
     # zde definujte do funkce asyncio.gather
     # vlozte asynchronni funkce, ktere maji data uvest do prvotniho konzistentniho stavu
 
-    #await predefineAllDataStructures(result)  ##ve finishu odkomentovat po dokonceni DBFeeder
+    await predefineAllDataStructures(result)  ##ve finishu odkomentovat po dokonceni DBFeeder
 
     # await asyncio.gather( # concurency running :)
     # sem lze dat vsechny funkce, ktere maji nejak inicializovat databazi

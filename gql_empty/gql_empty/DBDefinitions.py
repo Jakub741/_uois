@@ -37,8 +37,6 @@ def UUIDColumn(name=None):
         )
     
 
-## docasny replacement
-
 # mezitabulka thesis-user-role
 class ThesesUserRoleModel(BaseModel):
     __tablename__ = 'thesesuser'
@@ -90,7 +88,7 @@ class ThesesRoleModel(BaseModel):  #prejmenovat na ThesesRoleTypeModel
     theses = relationship('ThesesUserRoleModel', back_populates='thesesrole')
 
 class UserModel(BaseModel):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
     id = UUIDColumn()
     
     thesesroles = relationship('ThesesUserRoleModel', back_populates = 'user')

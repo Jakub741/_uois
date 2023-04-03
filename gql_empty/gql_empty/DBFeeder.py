@@ -68,16 +68,15 @@ def types3(): #pro ThesesTypeModel
 @cache
 def types4(): #pro ThesesRoleModel
     data = [
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120003", "name": "Autor"},
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120004", "name": "Vedoucí"},
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120005", "name": "Oponent"},
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120006", "name": "Pomocník"},
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120007", "name": "Referent"},
-       {"id": "4b883614-6d9f-11ed-a1eb-0242ac120008", "name": "Ostatní"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120003", "name": "Autor"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120004", "name": "Vedoucí"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120005", "name": "Oponent"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120006", "name": "Pomocník"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120007", "name": "Referent"},
+       {"id": "4b883614-6d9a-11ed-a1eb-0242ac120008", "name": "Ostatní"},
     ]
     return data
 
-#zde definovat nase hard-coded data pro slovniky
 
 
 ###########################################################################################################################
