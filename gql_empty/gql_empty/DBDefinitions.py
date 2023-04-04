@@ -46,11 +46,10 @@ class ThesesUserRoleModel(BaseModel):
     theses_id = Column(ForeignKey('theses.id'))
     role_id = Column(ForeignKey('thesesrole.id'))
  
-    user  = relationship('UserModel', back_populates = 'thesesroles')
-    thesis = relationship('ThesesModel', back_populates = 'thesesroles')
-    thesesrole = relationship('ThesesRoleModel', back_populates = 'theses')# s čím má být propojený? - 1. varianta - propojení th.role s prací
-    # thesisr = relationship('ThesesModel', back_populates = 'thesesroles')                       
-    # thesesroles = relationship('ThesesRoleModel', back_populates = 'users') # 2. varianta - propojeni th.role s uživatelem 
+    user  = relationship('UserModel', back_populates = 'thesesroles') #relace s Uživateli
+    thesis = relationship('ThesesModel', back_populates = 'thesesroles') #relace s Pracemi
+    thesesrole = relationship('ThesesRoleModel', back_populates = 'theses') #relace s možnými rolemi uživatelů
+
 
 class ThesesModel(BaseModel):
     """Spravuje data spojena se závěrečnými prácemi
@@ -58,16 +57,15 @@ class ThesesModel(BaseModel):
     __tablename__ = 'theses'
     
     id = UUIDColumn()
-    name = Column(String) #Název práce
-    startDate = Column(DateTime) #Datum zahájení
-    endDate = Column(DateTime) #Datum ukončení
+    name = Column(String) #Name of work
+    startDate = Column(DateTime) #Start date
+    endDate = Column(DateTime) #End date
     lastchange = Column(DateTime, default=datetime.datetime.now)
-    state = Column(String) #Stav práce
+    state = Column(String) #State of work
     
     thesestype_id = Column(ForeignKey('thesestype.id')) #work type id/theses type id 
     
     thesestype  = relationship('ThesesTypeModel', back_populates='theses')
-    #users = relationship('ThesesUserRoleModel', back_populates = 'thesis')
     thesesroles = relationship('ThesesUserRoleModel', back_populates = 'thesis')
     
 
@@ -79,7 +77,7 @@ class ThesesTypeModel(BaseModel):
     
     theses = relationship('ThesesModel', back_populates='thesestype')
 
-class ThesesRoleModel(BaseModel):  #prejmenovat na ThesesRoleTypeModel
+class ThesesRoleModel(BaseModel):
     """druhy rolí které můžou které můžou být lidem přiřazeny"""
     __tablename__ = 'thesesrole'
     id = UUIDColumn()
@@ -88,26 +86,11 @@ class ThesesRoleModel(BaseModel):  #prejmenovat na ThesesRoleTypeModel
     theses = relationship('ThesesUserRoleModel', back_populates='thesesrole')
 
 class UserModel(BaseModel):
+    """Tabulka představující uživatele, dočasná, při Mergi bude odstraněna"""
     __tablename__ = 'users'
     id = UUIDColumn()
     
     thesesroles = relationship('ThesesUserRoleModel', back_populates = 'user')
-
-
-
-
-#pokussss
-# id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)
-
-###########################################################################################################################
-#
-# zde definujte sve SQLAlchemy modely
-# je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
-#
-#     metadata = sqlalchemy.MetaData()
-#
-###########################################################################################################################
-
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
