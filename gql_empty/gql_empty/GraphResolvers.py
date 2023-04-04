@@ -14,19 +14,14 @@ from uoishelpers.resolvers import (
 )
 from uoishelpers.resolvers import putSingleEntityToDb
 
-from gql_empty.DBDefinitions import BaseModel ##Muze to pryc?
+from gql_empty.DBDefinitions import BaseModel
 
 from gql_empty.DBDefinitions import ThesesModel, ThesesUserRoleModel, ThesesRoleModel, ThesesTypeModel #Import všech modelů z DBDefinitions
 
-#Resolve reference ke kazdemu GQL modelu!
 #Theses resolvers
 resolveThesesById = createEntityByIdGetter(ThesesModel) 
-resolveThesesForUser = create1NGetter(ThesesModel, foreignKeyName='user_id') 
-resolveUpdateTheses = createUpdateResolver(ThesesModel)
 resolveThesesRole = createEntityByIdGetter(ThesesRoleModel)
-resolveThesesUserRole = createEntityByIdGetter(ThesesUserRoleModel) ## tpc tady nevim
-resolveThesesAll = createEntityGetter(ThesesModel)
+resolveThesesUserRole = createEntityByIdGetter(ThesesUserRoleModel)
 resolveRolesForThesis = create1NGetter(ThesesUserRoleModel, foreignKeyName='theses_id')
 resolveRolesForUser = create1NGetter(ThesesUserRoleModel, foreignKeyName='user_id')
-resolveUserRole = create1NGetter(ThesesUserRoleModel, foreignKeyName='role_id')
 resolveThesisTypeById = createEntityByIdGetter(ThesesTypeModel)

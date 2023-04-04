@@ -31,28 +31,9 @@ def singleCall(asyncFunc):
 ###########################################################################################################################
 
 
-@cache
-def types1():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
-    data = [
-        {"id": "282e67ec-6d9e-11ed-a1eb-0242ac120002", "name": "typeA"},
-        {"id": "282e6e86-6d9e-11ed-a1eb-0242ac120002", "name": "typeB"},
-        {"id": "282e7002-6d9e-11ed-a1eb-0242ac120002", "name": "typeC"},
-    ]
-    return data
-
 
 @cache
-def types2():
-    # krome id a name, lze mit i dalsi prvky, napriklad cizi klice...
-    data = [
-        {"id": "4b883614-6d9e-11ed-a1eb-0242ac120002", "name": "typeX"},
-        {"id": "4b8838a8-6d9e-11ed-a1eb-0242ac120002", "name": "typeY"},
-        {"id": "4b883a38-6d9e-11ed-a1eb-0242ac120002", "name": "typeZ"},
-    ]
-    return data
-@cache
-def types3(): #pro ThesesTypeModel
+def types1(): #pro ThesesTypeModel
     data = [
        {"id": "4b883614-6d9e-11ed-a1eb-0242ac120003", "name": "Bakalářská práce"},
        {"id": "4b883614-6d9e-11ed-a1eb-0242ac120004", "name": "Diplomová práce"},
@@ -66,7 +47,7 @@ def types3(): #pro ThesesTypeModel
     ]
     return data
 @cache
-def types4(): #pro ThesesRoleModel
+def types2(): #pro ThesesRoleModel
     data = [
        {"id": "4b883614-6d9a-11ed-a1eb-0242ac120003", "name": "Autor"},
        {"id": "4b883614-6d9a-11ed-a1eb-0242ac120004", "name": "Vedoucí"},
@@ -91,8 +72,8 @@ import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
     
     asyncio.gather(
-        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesTypeModel, types3),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesRoleModel, types4)
+        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesTypeModel, types1),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, ThesesRoleModel, types2)
     )
     
     

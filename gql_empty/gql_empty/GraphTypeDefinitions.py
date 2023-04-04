@@ -26,22 +26,10 @@ def AsyncSessionFromInfo(info):
 def AsyncSessionMakerFromInfo(info):
     return info.context['asyncSessionMaker']
 
-###############################################
-
-
-###########################################################################################################################
-#
-# zde definujte sve GQL modely
-# - nove, kde mate zodpovednost
-# - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
-#
-###########################################################################################################################
-
 #import resolverů
 from gql_empty.GraphResolvers import (resolveThesesById,
                                       resolveThesesRole,
                                       resolveThesesUserRole,
-                                      resolveUserRole,
                                       resolveRolesForThesis,
                                       resolveRolesForUser,
                                       resolveThesisTypeById)
@@ -64,7 +52,7 @@ class ThesesGQLModel:
     @strawberryA.field(description="""Type of Theses""")
     async def type(self,info: strawberryA.types.Info) -> "ThesesTypeGQLModel":
         async with withInfo(info) as session:
-            result = await resolveThesisTypeById(session,self.work_id)
+            result = await resolveThesisTypeById(session,self.thesestype_id)
             return result
 
     @strawberryA.field(description="""Name""")
@@ -100,9 +88,9 @@ class UserGQLModel:
 
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
-        return UserGQLModel(id=id)  # jestlize rozsirujete, musi byt tento vyraz
+        return UserGQLModel(id=id)
     
-    @strawberryA.field(description="""Possible roles within Theses""")
+    @strawberryA.field(description="""Possible roles within Theses""") 
     async def thesesRoles(self, info: strawberryA.types.Info)->List['ThesesUserRoleGQLModel']:
         async with withInfo(info) as session:
             result = await resolveRolesForUser(session, self.id)
@@ -120,6 +108,10 @@ class ThesesRoleTypeGQLModel:
     @strawberryA.field(description="""Name of role""")
     def name(self) -> str:
         return self.name
+    
+    @strawberryA.field(description="""ID of role""")
+    def id(self) -> str:
+        return self.id
 ################################
 @strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesUserRole""")
 class ThesesUserRoleGQLModel:
@@ -131,27 +123,21 @@ class ThesesUserRoleGQLModel:
             return result
    
     @strawberryA.field(description="""User assigned to Thesis""")
-    async def user(cls, info: strawberryA.types.Info, id: strawberryA.ID)->UserGQLModel:
-        async with withInfo(info) as session:
-            result = await resolveRolesForUser(session, id) 
-            result._type_definition = cls._type_definition 
-            return result
+    async def user(self, info: strawberryA.types.Info)->UserGQLModel:
+        result = UserGQLModel.resolve_reference(self.user_id)
+        return result
    
-    @strawberryA.field(description="""Thesis which we are pointing to""") ##vylepsit nazev - je to xopowo?
-    async def thesis(cls, info: strawberryA.types.Info, id: strawberryA.ID)->ThesesGQLModel:
-        async with withInfo(info) as session:
-            result = await resolveRolesForThesis(session, id) 
-            result._type_definition = cls._type_definition
-            return result
+    @strawberryA.field(description="""Thesis which we are pointing to""") 
+    async def thesis(self, info: strawberryA.types.Info)->ThesesGQLModel: 
+        result = await ThesesGQLModel.resolve_reference(info=info, id=self.theses_id)
+        return result
     
     @strawberryA.field(description="""Role of User in Thesis""")
-    async def roleType(cls, info: strawberryA.types.Info, id: strawberryA.ID)->ThesesRoleTypeGQLModel:
-        async with withInfo(info) as session:
-            result = await resolveUserRole(session, id) 
-            result._type_definition = cls._type_definition 
-            return result
+    async def roleType(self, info: strawberryA.types.Info)->ThesesRoleTypeGQLModel:
+        result = await ThesesRoleTypeGQLModel.resolve_reference(info=info, id=self.role_id)  
+        return result
 
-@strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesType""") #Je to spravne?
+@strawberryA.federation.type(keys=["id"],description="""Entity representing a ThesesType""")
 class ThesesTypeGQLModel:
     @classmethod
     async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
@@ -162,19 +148,16 @@ class ThesesTypeGQLModel:
     @strawberryA.field(description="""Type of Thesis""")
     def name(self) -> str:
         return self.name
-
+    
+    @strawberryA.field(description="""ID of Thesis""")
+    def id(self) -> str:
+        return self.id
 
 ###########################################################################################################################
-#
-# zde definujte svuj Query model
-#
-###########################################################################################################################
 
-
-
-
-@strawberryA.type(description="""Type for query root""")  #whaaaaat
+@strawberryA.type(description="""Type for query root""")
 class Query:
+    """This is the main query function"""
     @strawberryA.field(description="""Finds Theses by their id""")
     async def Theses_by_id(self, info: strawberryA.types.Info, id: uuid.UUID) -> Union[ThesesGQLModel, None]:
         result = await resolveThesesById(AsyncSessionFromInfo(info), id)
@@ -186,7 +169,6 @@ class Query:
     ) -> Union[str, None]:
         result = f"Hello {id}"
         return result
-
 
 
 ###########################################################################################################################

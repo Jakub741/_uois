@@ -1,0 +1,85 @@
+query MyQuery {
+  _entities(representations: [{__typename: "UserGQLModel", id: ""}]) {
+    ... on UserGQLModel {
+      id
+      thesesRoles {
+        thesis {
+          id
+        }
+        roleType {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+query MyQuery {
+  _entities(representations: [{__typename: "UserGQLModel", id: "4b883614-6d9e-11ed-a1eb-0242ac145003"}]) {
+    ... on UserGQLModel {
+      id
+      thesesRoles {
+        thesis {
+          id
+          roles{
+            roleType{
+              name
+            }
+            user{
+              id
+            }
+          }
+        }
+        roleType {
+          name
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+docker.io/cherf/analyza_informacnich_zdroju
+
+query MyQuery {
+  _entities(representations: [{__typename: "UserGQLModel", id: "4b883614-6d9e-11ed-a1eb-0242ac145003"}]) {
+    ... on UserGQLModel {
+      thesesRoles {
+        thesis {
+          id
+          name
+          startDate
+          endDate
+          state
+          type{
+            name
+          }
+          roles{
+            roleType{
+              name
+            }
+            user{
+              id
+            }
+          }
+        }
+        roleType {
+          name
+        }
+      }
+    }
+  }
+}
+
